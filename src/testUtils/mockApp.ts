@@ -128,10 +128,17 @@ export default function getMockApp(): App {
         remove: () => Promise.resolve(),
         rename: () => Promise.resolve(),
         copy: () => Promise.resolve(),
+        stat: () => Promise.resolve(null),
+        append: () => Promise.resolve(),
+        process: () => Promise.resolve(""),
       },
       getName: () => "",
       getAbstractFileByPath: (path: string) =>
         window.existingFiles[path] || null,
+      getFileByPath: (path: string) =>
+        (window.existingFiles[path] as TFile) || null,
+      getFolderByPath: (path: string) =>
+        (window.existingFiles[path] as TFolder) || null,
       getRoot: () => ({
         children: [],
         isRoot: () => true,
@@ -158,10 +165,13 @@ export default function getMockApp(): App {
       rename: () => Promise.resolve(),
       modify: () => Promise.resolve(),
       modifyBinary: () => Promise.resolve(),
+      append: () => Promise.resolve(),
+      process: () => Promise.resolve(""),
       copy: () => Promise.resolve(null),
       getAllLoadedFiles: () => [],
       getMarkdownFiles: () => [],
       getFiles: () => [],
+      getAllFolders: () => [],
       on: () => null,
       off: () => null,
       offref: () => null,

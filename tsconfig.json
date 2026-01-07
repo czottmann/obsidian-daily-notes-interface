@@ -1,14 +1,22 @@
 {
   "compilerOptions": {
+    "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
-    "inlineSourceMap": true,
-    "inlineSources": true,
+    "forceConsistentCasingInFileNames": true,
+    "importHelpers": true,
+    "isolatedModules": true,
+    "lib": [
+      "DOM",
+      "ES2022"
+    ],
     "module": "ESNext",
-    "target": "esnext",
     "moduleResolution": "node",
-    "lib": ["dom", "es2020"],
+    "noFallthroughCasesInSwitch": true,
+    "target": "ES2022",
     "types": ["node", "jest"]
   },
-  "include": ["**/*.ts"]
+  "include": [
+    "src/**/*.ts"
+  ]
 }
