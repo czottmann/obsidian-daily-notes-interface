@@ -11,7 +11,7 @@ export class WeeklyNotesFolderMissingError extends Error {}
 function getDaysOfWeek(): string[] {
   const { moment } = window;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let weekStart = (<any>moment.localeData())._week.dow;
+  let weekStart = (<any> moment.localeData())._week.dow;
   const daysOfWeek = [
     "sunday",
     "monday",
@@ -31,6 +31,26 @@ function getDaysOfWeek(): string[] {
 
 export function getDayOfWeekNumericalValue(dayOfWeekName: string): number {
   return getDaysOfWeek().indexOf(dayOfWeekName.toLowerCase());
+}
+
+function isISOWeekFormat(format: string): boolean {
+  // Strip content inside brackets (escaped characters)
+  const cleanFormat = format.replace(/\[[^\]]*\]/g, "");
+  // Check for ISO week tokens: G (ISO Year), W (ISO Week), E (ISO Day)
+  return /[GWE]/.test(cleanFormat);
+}
+
+function getISODayOfWeekNumericalValue(dayOfWeekName: string): number {
+  const daysOfWeek: Record<string, number> = {
+    monday: 1,
+    tuesday: 2,
+    wednesday: 3,
+    thursday: 4,
+    friday: 5,
+    saturday: 6,
+    sunday: 7,
+  };
+  return daysOfWeek[dayOfWeekName.toLowerCase()] || -1;
 }
 
 export async function createWeeklyNote(date: Moment): Promise<TFile> {
@@ -61,17 +81,22 @@ export async function createWeeklyNote(date: Moment): Promise<TFile> {
               return currentDate.format(momentFormat.substring(1).trim());
             }
             return currentDate.format(format);
-          }
+          },
         )
         .replace(/{{\s*title\s*}}/gi, filename)
         .replace(/{{\s*time\s*}}/gi, window.moment().format("HH:mm"))
         .replace(
           /{{\s*(sunday|monday|tuesday|wednesday|thursday|friday|saturday)\s*:(.*?)}}/gi,
           (_, dayOfWeek, momentFormat) => {
+            if (isISOWeekFormat(format)) {
+              // Use ISO weekday for ISO week formats
+              const isoDay = getISODayOfWeekNumericalValue(dayOfWeek);
+              return date.isoWeekday(isoDay).format(momentFormat.trim());
+            }
             const day = getDayOfWeekNumericalValue(dayOfWeek);
             return date.weekday(day).format(momentFormat.trim());
-          }
-        )
+          },
+        ),
     );
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -86,7 +111,7 @@ export async function createWeeklyNote(date: Moment): Promise<TFile> {
 
 export function getWeeklyNote(
   date: Moment,
-  weeklyNotes: Record<string, TFile>
+  weeklyNotes: Record<string, TFile>,
 ): TFile {
   return weeklyNotes[getDateUID(date, "week")] ?? null;
 }
@@ -101,12 +126,12 @@ export function getAllWeeklyNotes(): Record<string, TFile> {
   const { vault } = window.app;
   const { folder } = getWeeklyNoteSettings();
   const weeklyNotesFolder = vault.getAbstractFileByPath(
-    normalizePath(folder)
+    normalizePath(folder),
   ) as TFolder;
 
   if (!weeklyNotesFolder) {
     throw new WeeklyNotesFolderMissingError(
-      "Failed to find weekly notes folder"
+      "Failed to find weekly notes folder",
     );
   }
 
