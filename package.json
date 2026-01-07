@@ -15,6 +15,7 @@
   "scripts": {
     "lint": "eslint . --ext .ts",
     "build": "npm run lint && rollup -c",
+    "prepare": "npm run build",
     "test": "jest",
     "test:watch": "yarn test -- --watch"
   },
