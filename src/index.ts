@@ -9,74 +9,31 @@ declare global {
   }
 }
 
-export function appHasDailyNotesPluginLoaded(): boolean {
-  const { app } = window;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const dailyNotesPlugin = (<any>app).internalPlugins.plugins["daily-notes"];
-  if (dailyNotesPlugin && dailyNotesPlugin.enabled) {
-    return true;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const periodicNotes = (<any>app).plugins.getPlugin("periodic-notes");
-  return periodicNotes && periodicNotes.settings?.daily?.enabled;
-}
-
-/**
- * XXX: "Weekly Notes" live in either the Calendar plugin or the periodic-notes plugin.
- * Check both until the weekly notes feature is removed from the Calendar plugin.
- */
-export function appHasWeeklyNotesPluginLoaded(): boolean {
-  const { app } = window;
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  if ((<any>app).plugins.getPlugin("calendar")) {
-    return true;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const periodicNotes = (<any>app).plugins.getPlugin("periodic-notes");
-  return periodicNotes && periodicNotes.settings?.weekly?.enabled;
-}
-
-export function appHasMonthlyNotesPluginLoaded(): boolean {
-  const { app } = window;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const periodicNotes = (<any>app).plugins.getPlugin("periodic-notes");
-  return periodicNotes && periodicNotes.settings?.monthly?.enabled;
-}
-
-export function appHasQuarterlyNotesPluginLoaded(): boolean {
-  const { app } = window;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const periodicNotes = (<any>app).plugins.getPlugin("periodic-notes");
-  return periodicNotes && periodicNotes.settings?.quarterly?.enabled;
-}
-
-export function appHasYearlyNotesPluginLoaded(): boolean {
-  const { app } = window;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const periodicNotes = (<any>app).plugins.getPlugin("periodic-notes");
-  return periodicNotes && periodicNotes.settings?.yearly?.enabled;
-}
+export {
+  appHasDailyNotesPluginLoaded,
+  appHasMonthlyNotesPluginLoaded,
+  appHasQuarterlyNotesPluginLoaded,
+  appHasWeeklyNotesPluginLoaded,
+  appHasYearlyNotesPluginLoaded,
+} from "./plugin";
 
 export {
   DEFAULT_DAILY_NOTE_FORMAT,
-  DEFAULT_WEEKLY_NOTE_FORMAT,
   DEFAULT_MONTHLY_NOTE_FORMAT,
   DEFAULT_QUARTERLY_NOTE_FORMAT,
+  DEFAULT_WEEKLY_NOTE_FORMAT,
   DEFAULT_YEARLY_NOTE_FORMAT,
 } from "./constants";
 
 import type { IGranularity, IPeriodicNoteSettings } from "./types";
 import {
   getDailyNoteSettings,
-  getWeeklyNoteSettings,
   getMonthlyNoteSettings,
   getQuarterlyNoteSettings,
+  getWeeklyNoteSettings,
   getYearlyNoteSettings,
 } from "./settings";
-import { createDailyNote, getDailyNote, getAllDailyNotes } from "./daily";
+import { createDailyNote, getAllDailyNotes, getDailyNote } from "./daily";
 import { createWeeklyNote, getAllWeeklyNotes, getWeeklyNote } from "./weekly";
 import {
   createMonthlyNote,
@@ -90,11 +47,11 @@ import {
 } from "./quarterly";
 import { createYearlyNote, getAllYearlyNotes, getYearlyNote } from "./yearly";
 
-export { getDateUID, getDateFromFile, getDateFromPath } from "./parse";
+export { getDateFromFile, getDateFromPath, getDateUID } from "./parse";
 export { getTemplateInfo } from "./vault";
 
 function getPeriodicNoteSettings(
-  granularity: IGranularity
+  granularity: IGranularity,
 ): IPeriodicNoteSettings {
   const getSettings = {
     day: getDailyNoteSettings,
@@ -109,7 +66,7 @@ function getPeriodicNoteSettings(
 
 function createPeriodicNote(
   granularity: IGranularity,
-  date: Moment
+  date: Moment,
 ): Promise<TFile> {
   const createFn = {
     day: createDailyNote,
@@ -123,24 +80,24 @@ export type { IGranularity, IPeriodicNoteSettings };
 export {
   createDailyNote,
   createMonthlyNote,
-  createWeeklyNote,
-  createQuarterlyNote,
-  createYearlyNote,
   createPeriodicNote,
+  createQuarterlyNote,
+  createWeeklyNote,
+  createYearlyNote,
   getAllDailyNotes,
   getAllMonthlyNotes,
-  getAllWeeklyNotes,
   getAllQuarterlyNotes,
+  getAllWeeklyNotes,
   getAllYearlyNotes,
   getDailyNote,
   getDailyNoteSettings,
   getMonthlyNote,
   getMonthlyNoteSettings,
   getPeriodicNoteSettings,
-  getWeeklyNote,
-  getWeeklyNoteSettings,
   getQuarterlyNote,
   getQuarterlyNoteSettings,
+  getWeeklyNote,
+  getWeeklyNoteSettings,
   getYearlyNote,
   getYearlyNoteSettings,
 };

@@ -1,7 +1,7 @@
 import type { Moment } from "moment";
 import { normalizePath, Notice, TFile, TFolder, Vault } from "obsidian";
 
-import { appHasMonthlyNotesPluginLoaded } from "./index";
+import { appHasMonthlyNotesPluginLoaded } from "./plugin";
 import { getDateFromFile, getDateUID } from "./parse";
 import { getMonthlyNoteSettings } from "./settings";
 import { getNotePath, getTemplateInfo } from "./vault";
@@ -43,11 +43,11 @@ export async function createMonthlyNote(date: Moment): Promise<TFile> {
               return currentDate.format(momentFormat.substring(1).trim());
             }
             return currentDate.format(format);
-          }
+          },
         )
         .replace(/{{\s*date\s*}}/gi, filename)
         .replace(/{{\s*time\s*}}/gi, window.moment().format("HH:mm"))
-        .replace(/{{\s*title\s*}}/gi, filename)
+        .replace(/{{\s*title\s*}}/gi, filename),
     );
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -62,7 +62,7 @@ export async function createMonthlyNote(date: Moment): Promise<TFile> {
 
 export function getMonthlyNote(
   date: Moment,
-  monthlyNotes: Record<string, TFile>
+  monthlyNotes: Record<string, TFile>,
 ): TFile {
   return monthlyNotes[getDateUID(date, "month")] ?? null;
 }
@@ -77,12 +77,12 @@ export function getAllMonthlyNotes(): Record<string, TFile> {
   const { folder } = getMonthlyNoteSettings();
 
   const monthlyNotesFolder = vault.getAbstractFileByPath(
-    normalizePath(folder)
+    normalizePath(folder),
   ) as TFolder;
 
   if (!monthlyNotesFolder) {
     throw new MonthlyNotesFolderMissingError(
-      "Failed to find monthly notes folder"
+      "Failed to find monthly notes folder",
     );
   }
 

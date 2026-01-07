@@ -1,7 +1,7 @@
 import type { Moment } from "moment";
 import { normalizePath, Notice, TFile, TFolder, Vault } from "obsidian";
 
-import { appHasYearlyNotesPluginLoaded } from "./index";
+import { appHasYearlyNotesPluginLoaded } from "./plugin";
 import { getDateFromFile, getDateUID } from "./parse";
 import { getYearlyNoteSettings } from "./settings";
 import { getNotePath, getTemplateInfo } from "./vault";
@@ -43,11 +43,11 @@ export async function createYearlyNote(date: Moment): Promise<TFile> {
               return currentDate.format(momentFormat.substring(1).trim());
             }
             return currentDate.format(format);
-          }
+          },
         )
         .replace(/{{\s*date\s*}}/gi, filename)
         .replace(/{{\s*time\s*}}/gi, window.moment().format("HH:mm"))
-        .replace(/{{\s*title\s*}}/gi, filename)
+        .replace(/{{\s*title\s*}}/gi, filename),
     );
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -62,7 +62,7 @@ export async function createYearlyNote(date: Moment): Promise<TFile> {
 
 export function getYearlyNote(
   date: Moment,
-  yearlyNotes: Record<string, TFile>
+  yearlyNotes: Record<string, TFile>,
 ): TFile {
   return yearlyNotes[getDateUID(date, "year")] ?? null;
 }
@@ -77,12 +77,12 @@ export function getAllYearlyNotes(): Record<string, TFile> {
   const { folder } = getYearlyNoteSettings();
 
   const yearlyNotesFolder = vault.getAbstractFileByPath(
-    normalizePath(folder)
+    normalizePath(folder),
   ) as TFolder;
 
   if (!yearlyNotesFolder) {
     throw new YearlyNotesFolderMissingError(
-      "Failed to find yearly notes folder"
+      "Failed to find yearly notes folder",
     );
   }
 

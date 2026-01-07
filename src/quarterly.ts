@@ -1,7 +1,7 @@
 import type { Moment } from "moment";
 import { normalizePath, Notice, TFile, TFolder, Vault } from "obsidian";
 
-import { appHasQuarterlyNotesPluginLoaded } from "./index";
+import { appHasQuarterlyNotesPluginLoaded } from "./plugin";
 import { getDateFromFile, getDateUID } from "./parse";
 import { getQuarterlyNoteSettings } from "./settings";
 import { getNotePath, getTemplateInfo } from "./vault";
@@ -43,11 +43,11 @@ export async function createQuarterlyNote(date: Moment): Promise<TFile> {
               return currentDate.format(momentFormat.substring(1).trim());
             }
             return currentDate.format(format);
-          }
+          },
         )
         .replace(/{{\s*date\s*}}/gi, filename)
         .replace(/{{\s*time\s*}}/gi, window.moment().format("HH:mm"))
-        .replace(/{{\s*title\s*}}/gi, filename)
+        .replace(/{{\s*title\s*}}/gi, filename),
     );
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -62,7 +62,7 @@ export async function createQuarterlyNote(date: Moment): Promise<TFile> {
 
 export function getQuarterlyNote(
   date: Moment,
-  quarterly: Record<string, TFile>
+  quarterly: Record<string, TFile>,
 ): TFile {
   return quarterly[getDateUID(date, "quarter")] ?? null;
 }
@@ -77,12 +77,12 @@ export function getAllQuarterlyNotes(): Record<string, TFile> {
   const { folder } = getQuarterlyNoteSettings();
 
   const quarterlyFolder = vault.getAbstractFileByPath(
-    normalizePath(folder)
+    normalizePath(folder),
   ) as TFolder;
 
   if (!quarterlyFolder) {
     throw new QuarterlyNotesFolderMissingError(
-      "Failed to find quarterly notes folder"
+      "Failed to find quarterly notes folder",
     );
   }
 

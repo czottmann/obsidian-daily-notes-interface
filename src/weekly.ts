@@ -1,7 +1,7 @@
 import type { Moment } from "moment";
 import { normalizePath, Notice, TFile, TFolder, Vault } from "obsidian";
 
-import { appHasWeeklyNotesPluginLoaded } from "./index";
+import { appHasWeeklyNotesPluginLoaded } from "./plugin";
 import { getDateFromFile, getDateUID } from "./parse";
 import { getWeeklyNoteSettings } from "./settings";
 import { getNotePath, getTemplateInfo } from "./vault";
